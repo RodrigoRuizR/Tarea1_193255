@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: coppelpay-namespace
+  labels:
+    app: postgres-server
+spec:
+  selector:
+    matchLabels:
+      app: postgres-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres-server
+    spec:
+      containers:
+      - image: postgres:11  #docker pull image
+        name: postgres-db1
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-db-volume1
+        env:
+         - name: POSTGRES_PASSWORD
+           value: "secret"
+         - name: POSTGRES_USER
+           value: "odoo"
+         - name: POSTGRES_DB
+           value: "postgres"
+      volumes:
+      - name: postgres-db-volume1
+        persistentVolumeClaim:
+           claimName: pvc-bbdd
+
+
+
+# Pod : postgres-deployment-6d44769fc8-zdc5t
+# Replica: 6d44769fc8
+
+# Pod: postgres-deployment-6d44769fc8-vl529
+# Replica: 6d44769fc8 -> 6d44769fc8
